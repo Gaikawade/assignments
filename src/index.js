@@ -18,4 +18,4 @@ app.use(errorHandler);
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`I'm Express🚚 and I'm serving you on port ${process.env.PORT || 3000}`);
-})
+});
