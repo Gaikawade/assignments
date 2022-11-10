@@ -1,5 +1,8 @@
 const student = require("../models/studentModel");
-const { sendError, subjectValidation } = require("../utils/sendError");
+const { marksValidator, subjectValidation } = require("../utils/helper");
+const { sendError } = require("../utils/sendError");
+
+const listedSubjects = ["English", "Hindi", "Maths", "Science", "Social"];
 
 const addMarks = async (req, res) => {
     let { name, id, subject, marks } = req.body;
@@ -8,22 +11,20 @@ const addMarks = async (req, res) => {
     if (stuDoc) {
         return sendError(
             res,
-            "You can not use the same id for different students");
+            "You can not use the same id for different students"
+        );
     }
 
-    subject = subjectValidation(res, subject);
+    subject = subjectValidation(subject);
+    if (!subject) {
+        return sendError(
+            res,
+            `If you are entering more than one subject, Please add a space between them & we have ${listedSubjects} subjects only`
+        );
+    }
 
-    marks = marks
-        .trim()
-        .replace(/\s+/g, " ")
-        .split(" ")
-        .map((x) => +x);
-
-    let checkMarks = marks.every((x) => {
-        return !isNaN(x);
-    });
-
-    if (!checkMarks) {
+    marks = marksValidator(res, marks);
+    if (!marks) {
         return sendError(res, "Marks must be a number and seperate by a space");
     }
 
@@ -33,10 +34,27 @@ const addMarks = async (req, res) => {
 };
 
 const updateMarks = async (req, res) => {
-  let {id, subject, marks} = req.body;
+    let { id, subject, marks } = req.body;
 
-  subject = subjectValidation(subject);
+    const stuDoc = await student.findOne({id});
+    if(!stuDoc) {
+      return sendError(res, `No student found with that ${id}`, 404);
+    }
 
-}
+    subject = subjectValidation(subject);
+    if (!subject) {
+        return sendError(
+            res,
+            `If you are entering more than one subject, Please add a space between them & we have ${listedSubjects} subjects only`
+        );
+    }
 
-module.exports = { addMarks };
+    marks = marksValidator(res, marks);
+    if (!marks) {
+        return sendError(res, "Marks must be a number and seperate by a space");
+    }
+
+
+};
+
+module.exports = { addMarks, updateMarks };
