@@ -26,11 +26,12 @@ const signin = async (req, res) =>{
   if(!matched) return sendError(res, 'Email/Password is wrong');
 
   const token = jwt.sign(
-    {userId : user._id},
+    {adminId : user._id},
     process.env.JWT_SECRET_KEY,
     {expiresIn: 60 * 1000}
   );
 
+  res.setHeader('Authorization', token);
   res.status(200).json({msg: 'Sign-in successful', data: {userId: user._id, token: {token}}});
 }
 

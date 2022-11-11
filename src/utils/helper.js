@@ -15,7 +15,8 @@ exports.subjectValidation = (subject) => {
     return result;
 };
 
-exports.marksValidator = (res, marks) => {
+exports.marksValidator = (
+    marks) => {
     let result = marks
         .trim()
         .replace(/\s+/g, " ")
