@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const objectId = mongoose.type.Schema.ObjectId;
 
 const studentSchema = mongoose.Schema(
   {
@@ -20,10 +21,17 @@ const studentSchema = mongoose.Schema(
     marks: {
       type: [ Number ],
       required: true,
-      trim: true,
+      trim: true
     },
+    admin: {
+      type: objectId,
+      ref: 'Admin',
+      required: true
+    }
   },
   { timestamps: true }
 );
 
 module.exports = mongoose.model("Student", studentSchema);
+
+//neeraj
